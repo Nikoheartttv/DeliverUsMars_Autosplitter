@@ -72,6 +72,7 @@ init
 	vars.UWorld = vars.GetStaticPointerFromSig("0F 2E ?? 74 ?? 48 8B 1D ?? ?? ?? ?? 48 85 DB 74", 0x8);
 	vars.GameEngine = vars.GetStaticPointerFromSig("48 89 05 ?? ?? ?? ?? 48 85 C9 74 05 E8 ?? ?? ?? ?? 48 8D 4D E0 E8", 0x3); // should be correct
 	vars.Loading = vars.GetStaticPointerFromSig("89 05 ?? ?? ?? ?? 85 C9 74", 0x2);
+	vars.Loading2 = vars.GetStaticPointerFromSig("89 05 ?? ?? ?? ?? C3 CC CC CC CC CC CC 48 89 5C 24 ?? 48 89 74 24", 0x2);
 
 	vars.Credits = vars.GetStaticPointerFromSig("0F B6 05 ?? ?? ?? ?? C3 CC CC CC CC CC CC CC CC 48 8B C4", 0x3);
 
@@ -86,6 +87,7 @@ init
 		new MemoryWatcher<long>(new DeepPointer(vars.UWorld, 0x18)) { Name = "worldFName"},
 		new MemoryWatcher<byte>(new DeepPointer(vars.Loading)) { Name = "load"},
 		new MemoryWatcher<byte>(new DeepPointer(vars.Credits)) { Name = "credits"},
+		new MemoryWatcher<byte>(new DeepPointer(vars.Loading2)) { Name = "load2"},
 	};
 
 	current.gameState = 0;
@@ -97,8 +99,9 @@ update
 	vars.watchers.UpdateAll(game);
 	
 	current.loading = vars.watchers["load"].Current;
+	current.loading2 = vars.watchers["load2"].Current;
 	vars.map = vars.GetNameFromFName(vars.watchers["worldFName"].Current);
-		current.endSplit = vars.watchers["credits"].Current;
+	current.endSplit = vars.watchers["credits"].Current;
 	
 	if(!String.IsNullOrEmpty(vars.map) && vars.map != "None")
 	{
@@ -167,7 +170,7 @@ split
 
 isLoading
 {
-	return (current.loading != 0);
+	return (current.loading != 0 || current.loading2 != 0);
 }
 
 onReset
