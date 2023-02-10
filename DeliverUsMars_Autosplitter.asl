@@ -70,10 +70,9 @@ init
 
 	vars.FNamePool = vars.GetStaticPointerFromSig("74 09 48 8D 15 ?? ?? ?? ?? EB 16", 0x5);
 	vars.UWorld = vars.GetStaticPointerFromSig("0F 2E ?? 74 ?? 48 8B 1D ?? ?? ?? ?? 48 85 DB 74", 0x8);
-	vars.GameEngine = vars.GetStaticPointerFromSig("48 89 05 ?? ?? ?? ?? 48 85 C9 74 05 E8 ?? ?? ?? ?? 48 8D 4D E0 E8", 0x3); // should be correct
+	vars.GameEngine = vars.GetStaticPointerFromSig("48 89 05 ?? ?? ?? ?? 48 85 C9 74 05 E8 ?? ?? ?? ?? 48 8D 4D E0 E8", 0x3);
 	vars.Loading = vars.GetStaticPointerFromSig("89 05 ?? ?? ?? ?? 85 C9 74", 0x2);
 	vars.Loading2 = vars.GetStaticPointerFromSig("89 05 ?? ?? ?? ?? C3 CC CC CC CC CC CC 48 89 5C 24 ?? 48 89 74 24", 0x2);
-
 	vars.Credits = vars.GetStaticPointerFromSig("0F B6 05 ?? ?? ?? ?? C3 CC CC CC CC CC CC CC CC 48 8B C4", 0x3);
 
 	if(vars.FNamePool == IntPtr.Zero || vars.UWorld == IntPtr.Zero || vars.GameEngine == IntPtr.Zero)
@@ -119,17 +118,6 @@ update
 	}
 
 	if(current.map != old.map) print("current map: " + current.map);
-
-	string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-	string docPath = path + @"\DeliverUsMarsLevels.txt";
-	if ((current.map != old.map) && (!vars.chaptersVisited.Contains(current.map)))
-	{
-		vars.chaptersVisited.Add(current.map);
-		using (var file = new StreamWriter(docPath, true))
-		{
-			file.WriteLine(current.map);            
-		}
-	}
 
 	if (vars.doneSplit.Contains("1050_Habitas_Persistent") && (current.map == "060_Odum_Persistent"))
 	{
