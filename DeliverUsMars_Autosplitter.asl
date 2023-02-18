@@ -79,7 +79,18 @@ init
 	{
 		throw new Exception("FNamePool/UWorld/GameEngine not initialized - trying again");
 	}
-
+	
+	string MD5Hash;
+	using (var md5 = System.Security.Cryptography.MD5.Create())
+	using (var s = File.Open(modules.First().FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+	MD5Hash = md5.ComputeHash(s).Select(x => x.ToString("X2")).Aggregate((a, b) => a + b);
+	print("Hash is: " + MD5Hash);
+	
+	switch(MD5Hash){
+		case "7C99533B59A26DD4B471B0E1C35957ED": version = "Steam 1.0.0"; break;
+		case "C20DBCEA3BA9F1CD2BEECA03C194B87E": version = "Steam 1.0.1"; break;
+		default: version = "Steam"; break;
+	}
 	
 	vars.watchers = new MemoryWatcherList
 	{
@@ -131,13 +142,16 @@ update
 
 onStart
 {
-	timer.IsGameTimePaused = true;
 	vars.doneSplit.Add(current.map);
 }
 
 start
 {
-	return ((old.map == "L_Mars_Menu") && (current.map != "L_Mars_Menu"));
+	if(old.map == "L_Mars_Menu" && current.map != "L_Mars_Menu")
+	{
+		timer.IsGameTimePaused = true;
+		return true;
+	}
 }
 
 split
